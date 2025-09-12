@@ -1,0 +1,44 @@
+# Core Framework
+Django==4.2.7
+djangorestframework==3.14.0
+django-oauth-toolkit==1.7.1
+django-mptt==0.14.0
+
+# Database & Caching
+psycopg2-binary==2.9.7
+redis==4.6.0
+django-redis==5.4.0
+
+# Environment & Configuration
+django-environ==0.11.2
+django-cors-headers==4.3.1
+
+# Async Processing
+celery==5.3.1
+django-celery-beat==2.5.0
+
+# Notifications
+africastalking==1.2.5
+django-anymail==10.1
+
+# Testing & Quality
+pytest==7.4.3
+pytest-django==4.7.0
+pytest-cov==4.1.0
+factory-boy==3.3.0
+pytest-mock==3.12.0
+
+# Code Quality
+black==23.9.1
+flake8==6.1.0
+isort==5.12.0
+mypy==1.7.0
+
+# Production
+gunicorn==21.2.0
+whitenoise==6.6.0
+dj-database-url==2.1.0
+
+# Development
+django-debug-toolbar==4.2.0
+django-extensions==3.2.3
