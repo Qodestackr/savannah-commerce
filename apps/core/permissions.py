@@ -1,8 +1,9 @@
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
+
+from guardian.shortcuts import get_objects_for_user
 from rest_framework import permissions
 from rest_framework.permissions import BasePermission
-from django.contrib.auth import get_user_model
-from guardian.shortcuts import get_objects_for_user
-from django.core.exceptions import ObjectDoesNotExist
 
 User = get_user_model()
 

@@ -1,8 +1,10 @@
-import django_filters
-from django.db import models
-from django_filters import rest_framework as filters
-from .models import Order, OrderItem
 from django.contrib.auth import get_user_model
+from django.db import models
+
+import django_filters
+from django_filters import rest_framework as filters
+
+from .models import Order, OrderItem
 
 User = get_user_model()
 
@@ -223,8 +225,9 @@ class DateRangeOrderFilter(django_filters.FilterSet):
         """
         Filter by predefined date ranges.
         """
-        from django.utils import timezone
         from datetime import datetime, timedelta
+
+        from django.utils import timezone
 
         now = timezone.now()
         today = now.date()

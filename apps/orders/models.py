@@ -1,7 +1,8 @@
-from django.db import models
 from django.contrib.auth import get_user_model
-from apps.core.models import TimeStampedModel
+from django.db import models
+
 from apps.core.audit_middleware import AuditableMixin
+from apps.core.models import TimeStampedModel
 from apps.products.models import Product
 
 User = get_user_model()
@@ -67,9 +68,11 @@ class Order(AuditableMixin, TimeStampedModel):
 
     def reserve_stock(self, expiration_minutes=30):
         """Reserve stock for this order."""
-        from .services import InventoryService
-        from django.utils import timezone
         from datetime import timedelta
+
+        from django.utils import timezone
+
+        from .services import InventoryService
 
         if self.status != "draft":
             return False
@@ -175,9 +178,11 @@ class Order(AuditableMixin, TimeStampedModel):
 
     def extend_reservation(self, additional_minutes=30):
         """Extend the reservation expiration time."""
-        from .services import InventoryService
-        from django.utils import timezone
         from datetime import timedelta
+
+        from django.utils import timezone
+
+        from .services import InventoryService
 
         if not self.is_reservation_active:
             return False

@@ -3,13 +3,15 @@ Admin interface for audit trail management.
 Provides comprehensive monitoring and compliance reporting tools.
 """
 
-from django.contrib import admin
-from django.utils.html import format_html
-from django.utils import timezone
-from django.urls import reverse
-from django.db.models import Count, Q
-from .audit import AuditEvent, DataAccessLog, SecurityEvent, ComplianceReport
 import json
+
+from django.contrib import admin
+from django.db.models import Count, Q
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.html import format_html
+
+from .audit import AuditEvent, ComplianceReport, DataAccessLog, SecurityEvent
 
 
 @admin.register(AuditEvent)

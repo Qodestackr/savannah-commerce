@@ -1,6 +1,7 @@
-import environ
-from pathlib import Path
 import os
+from pathlib import Path
+
+import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -218,8 +219,8 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 AFRICASTALKING_USERNAME = env("AFRICASTALKING_USERNAME", default="sandbox")
 AFRICASTALKING_API_KEY = env("AFRICASTALKING_API_KEY", default="")
 
-if not os.path.exists(BASE_DIR / 'logs'):
-    os.makedirs(BASE_DIR / 'logs', exist_ok=True)
+if not os.path.exists(BASE_DIR / "logs"):
+    os.makedirs(BASE_DIR / "logs", exist_ok=True)
 
 # Logging
 LOGGING = {

@@ -1,9 +1,11 @@
+from django.contrib.auth import get_user_model
+
 from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from django.contrib.auth import get_user_model
+
 from .models import Customer
-from .serializers import UserSerializer, CustomerSerializer
+from .serializers import CustomerSerializer, UserSerializer
 
 User = get_user_model()
 

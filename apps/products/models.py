@@ -1,8 +1,10 @@
 from django.db import models
 from django.utils.text import slugify
+
 from mptt.models import MPTTModel, TreeForeignKey
-from apps.core.models import TimeStampedModel
+
 from apps.core.audit_middleware import AuditableMixin
+from apps.core.models import TimeStampedModel
 
 
 class Category(MPTTModel, TimeStampedModel):
@@ -204,8 +206,9 @@ class StockReservation(TimeStampedModel):
 
     def extend_expiration(self, minutes=30):
         """Extend reservation expiration."""
-        from django.utils import timezone
         from datetime import timedelta
+
+        from django.utils import timezone
 
         self.expires_at = timezone.now() + timedelta(minutes=minutes)
         self.save(update_fields=["expires_at"])

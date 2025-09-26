@@ -3,15 +3,17 @@ Robust audit trail middleware and decorators.
 Automatically tracks all model changes and API access for compliance.
 """
 
-from django.utils.deprecation import MiddlewareMixin
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth import get_user_model
-from django.utils import timezone
-from django.db import transaction
-from .audit import AuditEvent, DataAccessLog
-import uuid
-import threading
 import json
+import threading
+import uuid
+
+from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
+from django.utils import timezone
+from django.utils.deprecation import MiddlewareMixin
+
+from .audit import AuditEvent, DataAccessLog
 
 User = get_user_model()
 

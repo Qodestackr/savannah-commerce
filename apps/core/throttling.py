@@ -1,11 +1,13 @@
+import time
+
+from django.contrib.auth import get_user_model
+from django.core.cache import cache
+
 from rest_framework.throttling import (
-    UserRateThrottle,
     AnonRateThrottle,
     SimpleRateThrottle,
+    UserRateThrottle,
 )
-from django.core.cache import cache
-from django.contrib.auth import get_user_model
-import time
 
 User = get_user_model()
 

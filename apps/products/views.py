@@ -1,22 +1,25 @@
-from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
+from django.core.cache import cache
 from django.db import models
 from django.db.models import Avg
-from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
-from apps.core.permissions import IsOwnerOrReadOnly, CustomerPermission, AdminPermission
+
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+from apps.core.permissions import AdminPermission, CustomerPermission, IsOwnerOrReadOnly
 from apps.core.throttling import (
     BurstRateThrottle,
-    SustainedRateThrottle,
     ConditionalThrottle,
+    SustainedRateThrottle,
 )
+
+from .filters import AdvancedProductFilter, CategoryFilter, ProductFilter
 from .models import Category, Product
-from .serializers import CategorySerializer, ProductSerializer, CategoryTreeSerializer
-from .filters import ProductFilter, CategoryFilter, AdvancedProductFilter
-from django_filters.rest_framework import DjangoFilterBackend
+from .serializers import CategorySerializer, CategoryTreeSerializer, ProductSerializer
 
 
 class CategoryViewSet(viewsets.ModelViewSet):

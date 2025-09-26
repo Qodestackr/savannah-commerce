@@ -1,13 +1,16 @@
-from django.db import transaction, models
-from django.core.exceptions import ValidationError
-from django.utils import timezone
-from datetime import timedelta
-import redis_lock
-import redis
-from typing import List, Dict, Optional, Tuple
 import logging
-from apps.products.models import Product, StockReservation, StockMovement
+from datetime import timedelta
+from typing import Dict, List, Optional, Tuple
+
+from django.core.exceptions import ValidationError
+from django.db import models, transaction
+from django.utils import timezone
+
+import redis
+import redis_lock
+
 from apps.orders.models import Order, OrderItem
+from apps.products.models import Product, StockMovement, StockReservation
 
 logger = logging.getLogger(__name__)
 

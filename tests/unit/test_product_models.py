@@ -1,4 +1,5 @@
 import pytest
+
 from apps.products.models import Category, Product
 
 

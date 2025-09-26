@@ -1,16 +1,20 @@
-from celery import shared_task
-from django.core.mail import send_mail
-from django.conf import settings
-from django.utils import timezone
-from django.db.models import Sum, Count, Avg
-from datetime import timedelta, datetime
-import africastalking
 import csv
 import io
 import logging
-from .models import NotificationLog, NotificationTemplate
+from datetime import datetime, timedelta
+
+from django.conf import settings
+from django.core.mail import send_mail
+from django.db.models import Avg, Count, Sum
+from django.utils import timezone
+
+import africastalking
+from celery import shared_task
+
 from apps.orders.models import Order, OrderItem
 from apps.products.models import Product, StockReservation
+
+from .models import NotificationLog, NotificationTemplate
 
 logger = logging.getLogger(__name__)
 
