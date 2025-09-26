@@ -1,293 +1,426 @@
-# Savannah Informatics E-Commerce Backend
+# Savannah E-Commerce API Testing Guide
 
-A comprehensive Django REST API for e-commerce operations featuring hierarchical product categories, OAuth2 authentication, order management, and automated SMS/email notifications.
+## Overview
+This guide provides comprehensive testing instructions for the Savannah E-Commerce backend system built for the Savannah Informatics assessment. The system includes OAuth2 authentication, hierarchical categories, product management, and order processing.
 
-## 🚀 Features
+## Prerequisites
 
-### Core Functionality
-- **OAuth2 Authentication**: OpenID Connect integration with secure token-based authentication
-- **Hierarchical Categories**: Unlimited depth product categories using MPTT (Modified Preorder Tree Traversal)
-- **Product Management**: Full CRUD operations with category-based filtering and search
-- **Order Management**: Complete order lifecycle with automated status tracking
-- **Real-time Notifications**: SMS via Africa's Talking API and email notifications
-- **Async Processing**: Celery-based background tasks for scalable operations
+### System Requirements
+- Python 3.8+
+- PostgreSQL (or SQLite for development)
+- Redis (for caching and Celery)
+- Virtual environment activated
 
-### Technical Highlights
-- **RESTful API Design**: Well-structured endpoints with proper HTTP status codes
-- **Database Optimization**: Efficient queries for hierarchical data with caching
-- **Comprehensive Testing**: 90%+ test coverage with unit and integration tests
-- **Docker Containerization**: Production-ready deployment configuration
-- **CI/CD Pipeline**: Automated testing and deployment with GitHub Actions
-- **API Documentation**: OpenAPI/Swagger integration with interactive docs
-
-## 🛠 Tech Stack
-
-- **Backend**: Python 3.11 + Django 4.2 + Django REST Framework 3.14
-- **Database**: PostgreSQL 15 with Redis for caching and Celery
-- **Authentication**: django-oauth-toolkit for OpenID Connect
-- **Background Tasks**: Celery + Redis for async processing
-- **Notifications**: Africa's Talking SMS + Django email backend
-- **Testing**: pytest + pytest-django with 90%+ coverage
-- **Containerization**: Docker + docker-compose
-- **API Documentation**: OpenAPI/Swagger
-
-## 📁 Project Structure
-
-```
-savannah-ecommerce/
-├── apps/
-│   ├── authentication/     # User management and OAuth2
-│   ├── products/          # Categories and products with MPTT
-│   ├── orders/            # Order management system
-│   ├── notifications/     # SMS/Email notification system
-│   └── core/              # Shared models and utilities
-├── config/
-│   ├── settings/          # Environment-specific configurations
-│   ├── urls.py           # Main URL configuration
-│   ├── wsgi.py           # WSGI application
-│   └── celery.py         # Celery configuration
-├── tests/
-│   ├── unit/             # Unit tests for models and services
-│   ├── integration/      # API endpoint tests
-│   └── fixtures/         # Test data
-├── docs/                 # API documentation
-├── docker-compose.yml    # Development environment
-├── Dockerfile           # Production container
-├── requirements.txt     # Python dependencies
-└── pytest.ini          # Test configuration
-```
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Docker and Docker Compose
-- Python 3.11+ (for local development)
-- Git
-
-### 1. Clone the Repository
+### Environment Setup
 ```bash
-git clone <repository-url>
-cd savannah-ecommerce
-```
+git clone git@github.com:Qodestackr/savannah-commerce.git
+cd savannah-commerce
 
-### 2. Environment Setup
-```bash
-# Copy environment variables
-cp .env.example .env
-
-# Edit .env file with your configurations
-# - Database credentials
-# - Redis connection
-# - Africa's Talking API keys
-# - Email configuration
-```
-
-### 3. Development with Docker
-```bash
-# Start all services
-docker-compose up -d
-
-# Run migrations
-docker-compose exec web python manage.py migrate
-
-# Create superuser
-docker-compose exec web python manage.py createsuperuser
-
-# Load sample data (optional)
-docker-compose exec web python manage.py loaddata fixtures/sample_data.json
-```
-
-### 4. Verify Installation
-- API Root: http://localhost:8000/api/
-- Admin Panel: http://localhost:8000/admin/
-- API Documentation: http://localhost:8000/api/docs/
-
-## 📚 API Endpoints
-
-### Authentication
-```http
-POST /o/token/                    # OAuth2 token (login)
-POST /api/auth/register/          # User registration
-GET  /api/auth/profile/           # User profile
-GET  /api/auth/customer/          # Customer profile
-```
-
-### Products & Categories
-```http
-GET    /api/categories/                    # List categories
-POST   /api/categories/                    # Create category
-GET    /api/categories/tree/               # Hierarchical tree view
-GET    /api/categories/{slug}/             # Category details
-GET    /api/categories/{slug}/products/    # Products in category
-GET    /api/categories/{slug}/avg-price/   # Average price by category
-
-GET    /api/products/                      # List products
-POST   /api/products/                      # Create product
-GET    /api/products/{id}/                 # Product details
-PUT    /api/products/{id}/                 # Update product
-DELETE /api/products/{id}/                 # Delete product
-```
-
-### Orders
-```http
-GET    /api/orders/                        # List user orders
-POST   /api/orders/                        # Create order
-GET    /api/orders/{id}/                   # Order details
-POST   /api/orders/{id}/cancel/           # Cancel order
-```
-
-## 🔐 Authentication
-
-The API uses OAuth2 with OpenID Connect for authentication. Here's how to authenticate:
-
-### 1. Get Access Token
-```bash
-curl -X POST http://localhost:8000/o/token/ \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "grant_type=password&username=your_email&password=your_password&client_id=your_client_id&client_secret=your_client_secret"
-```
-
-### 2. Use Token in Requests
-```bash
-curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  http://localhost:8000/api/products/
-```
-
-## 🔄 Background Tasks
-
-The system uses Celery for background processing:
-
-- **Order Notifications**: Automatic SMS to customers and email to admin
-- **Email Processing**: Async email sending to prevent blocking
-- **Data Sync**: Scheduled tasks for data synchronization
-
-### Monitor Celery Tasks
-```bash
-# Start Celery worker
-docker-compose exec celery celery -A config worker -l info
-
-# Monitor tasks
-docker-compose exec celery celery -A config flower
-```
-
-## 🧪 Testing
-
-### Run Tests
-```bash
-# All tests
-docker-compose exec web pytest
-
-# With coverage
-docker-compose exec web pytest --cov=apps --cov-report=html
-
-# Specific test file
-docker-compose exec web pytest tests/unit/test_product_models.py
-```
-
-### Test Coverage
-The project maintains 90%+ test coverage with:
-- Unit tests for models and business logic
-- Integration tests for API endpoints
-- Mock tests for external services
-- Factory-based test data generation
-
-## 📊 Database Schema
-
-### Key Models
-- **CustomUser**: Extended user model with OAuth2 support
-- **Customer**: Customer profile linked to user
-- **Category**: Hierarchical categories using MPTT
-- **Product**: Products with category relationships
-- **Order/OrderItem**: Complete order management
-- **NotificationLog**: Audit trail for sent notifications
-
-### Key Relationships
-```
-User (1:1) Customer
-Category (1:many) Category (hierarchical)
-Category (1:many) Product
-User (1:many) Order
-Order (1:many) OrderItem
-Product (1:many) OrderItem
-```
-
-## 🚀 Deployment
-
-### Production Deployment
-```bash
-# Build production image
-docker build -t savannah-ecommerce:latest .
-
-# Deploy with production settings
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### Environment Variables
-```env
-# Required Production Variables
-SECRET_KEY=your-secret-key
-DEBUG=False
-ALLOWED_HOSTS=your-domain.com
-DATABASE_URL=postgresql://user:pass@host:port/db
-REDIS_URL=redis://host:port/0
-AFRICASTALKING_API_KEY=your-api-key
-EMAIL_HOST_USER=your-email
-EMAIL_HOST_PASSWORD=your-password
-```
-
-## 📈 Performance Features
-
-- **Database Optimization**: Optimized queries with select_related/prefetch_related
-- **Caching**: Redis-based caching for categories and frequent queries
-- **API Pagination**: Efficient pagination for large datasets
-- **Background Processing**: Non-blocking operations with Celery
-- **Connection Pooling**: Database connection optimization
-
-## 🔧 Development
-
-### Local Development Setup
-```bash
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # Windows: venv\\Scripts\\activate
-
-# Install dependencies
+source venv/bin/activate 
 pip install -r requirements.txt
 
-# Run migrations
+# Database setup
 python manage.py migrate
+python manage.py createsuperuser
 
 # Start development server
 python manage.py runserver
 ```
 
-### Code Quality
+## Authentication Setup
+
+### 1. Create OAuth2 Application
+
+First, create an OAuth2 application through Django admin:
+
+### 2. Get Access Token
+
 ```bash
-# Format code
-black .
-
-# Sort imports
-isort .
-
-# Lint code
-flake8
-
-# Type checking
-mypy .
+curl -X POST http://127.0.0.1:8000/o/token/ \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password&username=admin&password=your_password&client_id=your-client-id&client_secret=your-client-secret"
 ```
 
-## 📖 API Documentation
+**Expected Response:**
+```json
+{
+  "access_token": "O2o8CNEFzwDZheswqBsRCvyqXoUatK",
+  "expires_in": 3600,
+  "token_type": "Bearer",
+  "scope": "read write",
+  "refresh_token": "VqzFH1OvrLbprNjYjRDGPEaZ0OzLD2"
+}
+```
 
-Interactive API documentation is available at:
-- **Swagger UI**: http://localhost:8000/api/docs/
-- **ReDoc**: http://localhost:8000/api/redoc/
-- **OpenAPI Schema**: http://localhost:8000/api/schema/
+## API Testing Guide
 
-## Self Tinkering/Next Steps
-- Audit Trails
-- Clean Nextjs frontend coz backend pains is not enough 😅
-- Otel & Jaeger Tracing
+### Environment Variables
+Set your access token for convenience:
+```bash
+export ACCESS_TOKEN="O2o8CNEFzwDZheswqBsRCvyqXoUatK"
+```
 
 ---
 
-Built with ❤️ for Savannah Informatics Technical Assessment
+## 1. Category Management
+
+### Create Root Category
+```bash
+curl -X POST http://127.0.0.1:8000/api/categories/ \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -d '{
+    "name": "Electronics",
+    "description": "Electronic devices and accessories"
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "id": "ce221d45-376c-462b-8ac4-5b264313e69d",
+  "name": "Electronics",
+  "slug": "electronics",
+  "description": "Electronic devices and accessories",
+  "parent": null,
+  "full_path": "Electronics",
+  "children": [],
+  "is_active": true,
+  "created_at": "2025-09-26T09:40:54.469600+03:00",
+  "updated_at": "2025-09-26T09:40:54.472128+03:00"
+}
+```
+
+### Create Child Category
+```bash
+curl -X POST http://127.0.0.1:8000/api/categories/ \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -d '{
+    "name": "Smartphones",
+    "description": "Mobile phones and smartphones",
+    "parent": "ce221d45-376c-462b-8ac4-5b264313e69d"
+  }'
+```
+
+### List All Categories
+```bash
+curl -X GET http://127.0.0.1:8000/api/categories/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Get Category Tree View
+```bash
+curl -X GET http://127.0.0.1:8000/api/categories/tree/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Get Category by Slug
+```bash
+curl -X GET http://127.0.0.1:8000/api/categories/electronics/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+---
+
+## 2. Product Management
+
+### Create Product
+```bash
+curl -X POST http://127.0.0.1:8000/api/products/ \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -d '{
+    "name": "iPhone 17 Pro Max",
+    "description": "Latest Apple smartphone with advanced features",
+    "price": 1199.99,
+    "sku": "IPHONE-15-PRO-001",
+    "category": "ce221d45-376c-462b-8ac4-5b264313e69d",
+    "stock_quantity": 50
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "id": "bb444022-66be-4bca-9bbb-bea5a96856fd",
+  "name": "iPhone 17 Pro Max",
+  "description": "Latest Apple smartphone with advanced features",
+  "price": "1199.99",
+  "sku": "IPHONE-15-PRO-001",
+  "category": "ce221d45-376c-462b-8ac4-5b264313e69d",
+  "category_name": "Electronics",
+  "category_path": "Electronics",
+  "stock_quantity": 50,
+  "is_in_stock": true,
+  "is_active": true,
+  "created_at": "2025-09-26T09:42:16.000634+03:00",
+  "updated_at": "2025-09-26T09:42:16.001712+03:00"
+}
+```
+
+### List Products
+```bash
+curl -X GET http://127.0.0.1:8000/api/products/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Filter Products by Category
+```bash
+curl -X GET "http://127.0.0.1:8000/api/products/?category=ce221d45-376c-462b-8ac4-5b264313e69d" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Search Products
+```bash
+curl -X GET "http://127.0.0.1:8000/api/products/?search=iPhone" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Get Product Details
+```bash
+curl -X GET http://127.0.0.1:8000/api/products/bb444022-66be-4bca-9bbb-bea5a96856fd/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+---
+
+## 3. Category Analytics
+
+### Get Average Price for Category
+```bash
+curl -X GET http://127.0.0.1:8000/api/categories/electronics/average_price/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+**Expected Response:**
+```json
+{
+  "category": "Electronics",
+  "category_path": "Electronics",
+  "average_price": 1199.99,
+  "descendant_count": 1
+}
+```
+
+### Get Category Products
+```bash
+curl -X GET http://127.0.0.1:8000/api/categories/electronics/products/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Get Category Analytics
+```bash
+curl -X GET http://127.0.0.1:8000/api/categories/electronics/analytics/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+---
+
+## 4. User Management
+
+### Register New Customer
+```bash
+curl -X POST http://127.0.0.1:8000/api/auth/register/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "johndoe",
+    "email": "john@example.com",
+    "password": "securepassword123",
+    "first_name": "John",
+    "last_name": "Doe",
+    "phone": "+254700000000"
+  }'
+```
+
+### Get User Profile
+```bash
+curl -X GET http://127.0.0.1:8000/api/auth/profile/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+---
+
+## 5. Order Management
+
+### Create Order (Fixed Version)
+The order creation requires an `items` field, not `products`. Here's the correct format:
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/orders/ \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -d '{
+    "items": [
+      {
+        "product": "bb444022-66be-4bca-9bbb-bea5a96856fd",
+        "quantity": 2
+      }
+    ]
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "id": "order-uuid",
+  "customer": "customer-uuid",
+  "status": "pending",
+  "total_price": "1999.98",
+  "items": [
+    {
+      "product": "bb444022-66be-4bca-9bbb-bea5a96856fd",
+      "product_name": "iPhone 17 Pro Max",
+      "quantity": 2,
+      "unit_price": "1199.99",
+      "total_price": "1999.98"
+    }
+  ],
+  "created_at": "2025-09-26T10:30:00.000000+03:00"
+}
+```
+
+### List User Orders
+```bash
+curl -X GET http://127.0.0.1:8000/api/orders/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Get Order Details
+```bash
+curl -X GET http://127.0.0.1:8000/api/orders/order-uuid/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Cancel Order
+```bash
+curl -X POST http://127.0.0.1:8000/api/orders/order-uuid/cancel/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+---
+
+## 6. Advanced Product Features
+
+### Get Similar Products
+```bash
+curl -X GET http://127.0.0.1:8000/api/products/bb444022-66be-4bca-9bbb-bea5a96856fd/similar/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Get Trending Products
+```bash
+curl -X GET http://127.0.0.1:8000/api/products/trending/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Get Low Stock Products (Admin Only)
+```bash
+curl -X GET http://127.0.0.1:8000/api/products/low-stock/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+---
+
+## 7. Error Handling Test Cases
+
+### Test Invalid Category UUID
+```bash
+curl -X GET http://127.0.0.1:8000/api/categories/invalid-uuid/ \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Test Duplicate SKU
+```bash
+curl -X POST http://127.0.0.1:8000/api/products/ \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -d '{
+    "name": "Another Product",
+    "price": 50,
+    "sku": "IPHONE-15-PRO-001",
+    "category": "ce221d45-376c-462b-8ac4-5b264313e69d",
+    "stock_quantity": 10
+  }'
+```
+
+### Test Unauthorized Access
+```bash
+curl -X POST http://127.0.0.1:8000/api/categories/ \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Test Category"}'
+```
+
+---
+
+## 8. Performance Testing
+
+### Test Pagination
+```bash
+curl -X GET "http://127.0.0.1:8000/api/products/?page=1&page_size=5" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Test Filtering and Search
+```bash
+curl -X GET "http://127.0.0.1:8000/api/products/?search=iPhone&min_price=500&max_price=1500" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+### Test Ordering
+```bash
+curl -X GET "http://127.0.0.1:8000/api/products/?ordering=-price" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+---
+
+## 9. Common Issues and Solutions
+
+### Issue 1: "This field is required" for items in order creation
+**Solution:** Use `items` array instead of `products` array in order payload.
+
+### Issue 2: Category filtering not working
+**Solution:** Ensure you're using the correct UUID format and the category exists.
+
+### Issue 3: Authentication failures
+**Solution:** Check if your access token is valid and not expired. Refresh if needed.
+
+### Issue 4: Permission denied errors
+**Solution:** Ensure your user has the correct permissions for the action you're trying to perform.
+
+---
+
+## 10. Testing Checklist
+
+### Basic Functionality ✅
+- [ ] Create OAuth2 application
+- [ ] Obtain access token
+- [ ] Create root category
+- [ ] Create child category
+- [ ] Create product
+- [ ] Calculate average price
+- [ ] Create order
+- [ ] List orders
+
+### Advanced Features ✅
+- [ ] Test hierarchical categories
+- [ ] Filter products by category
+- [ ] Search products
+- [ ] Get category analytics
+- [ ] Test similar products
+- [ ] Test pagination
+- [ ] Test error handling
+
+### Security Testing ✅
+- [ ] Test unauthorized access
+- [ ] Test token expiration
+- [ ] Test permission-based access
+- [ ] Test input validation
+
+---
+
+## Conclusion
+
+This testing guide covers all major endpoints and functionalities of the Savannah e-commerce system
