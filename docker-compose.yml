@@ -41,7 +41,7 @@ services:
         condition: service_healthy
     environment:
       - DEBUG=1
-      - SECRET_KEY=django-insecure-dev-key-only
+      - SECRET_KEY=django-insecure-4b7f3e2c9a1d8f6e5b4c3a2f1e0d9c8b7a6f5e4d3c2b1a0f
       - DB_NAME=savannah_ecommerce
       - DB_USER=postgres
       - DB_PASSWORD=postgres
@@ -60,7 +60,7 @@ services:
       - redis
     environment:
       - DEBUG=1
-      - SECRET_KEY=django-insecure-dev-key-only
+      - SECRET_KEY=django-insecure-dev-key-only124ZQR
       - DB_NAME=savannah_ecommerce
       - DB_USER=postgres
       - DB_PASSWORD=postgres

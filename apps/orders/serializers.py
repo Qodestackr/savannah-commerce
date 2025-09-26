@@ -50,7 +50,6 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         items_data = validated_data.pop('items')
         request = self.context.get('request')
         
-        # Calculate total amount
         total_amount = sum(item['quantity'] * item['unit_price'] for item in items_data)
         
         order = Order.objects.create(

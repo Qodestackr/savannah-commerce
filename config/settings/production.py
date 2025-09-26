@@ -1,5 +1,3 @@
-"""Production settings."""
-
 from .base import *
 
 DEBUG = False
@@ -16,8 +14,6 @@ SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
-# Static files storage
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Logging for production
 LOGGING['handlers']['file']['filename'] = '/var/log/django/django.log'

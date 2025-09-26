@@ -4,5 +4,5 @@ from rest_framework.routers import DefaultRouter
 app_name = 'notifications'
 
 urlpatterns = [
-    # Notification endpoints will be added here
+    # TODO: Add notification-related URL patterns
 ]
