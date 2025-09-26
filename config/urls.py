@@ -4,12 +4,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    path('api/', include('apps.authentication.urls')),
-    path('api/', include('apps.products.urls')),
-    path('api/', include('apps.orders.urls')),
-    path('api/', include('apps.notifications.urls')),
+    path("admin/", admin.site.urls),
+    path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
+    path("api/", include("apps.authentication.urls")),
+    path("api/", include("apps.products.urls")),
+    path("api/", include("apps.orders.urls")),
+    path("api/", include("apps.notifications.urls")),
 ]
 
 if settings.DEBUG:

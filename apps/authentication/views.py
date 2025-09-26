@@ -11,7 +11,7 @@ User = get_user_model()
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
-    
+
     def get_object(self):
         return self.request.user
 
@@ -19,21 +19,21 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 class CustomerProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = CustomerSerializer
     permission_classes = [permissions.IsAuthenticated]
-    
+
     def get_object(self):
         customer, created = Customer.objects.get_or_create(user=self.request.user)
         return customer
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([permissions.AllowAny])
 def register_user(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
         Customer.objects.create(user=user)
-        return Response({
-            'message': 'User created successfully',
-            'user': UserSerializer(user).data
-        }, status=status.HTTP_201_CREATED)
+        return Response(
+            {"message": "User created successfully", "user": UserSerializer(user).data},
+            status=status.HTTP_201_CREATED,
+        )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

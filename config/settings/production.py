@@ -2,7 +2,7 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
@@ -14,6 +14,6 @@ SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-LOGGING['handlers']['file']['filename'] = '/var/log/django/django.log'
+LOGGING["handlers"]["file"]["filename"] = "/var/log/django/django.log"

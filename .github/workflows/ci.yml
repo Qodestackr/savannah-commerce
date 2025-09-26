@@ -111,6 +111,7 @@ jobs:
       uses: tj-actions/bandit@v5.1
       with:
         options: "-r apps/ config/ -f json -o bandit-report.json"
+        targets: "apps/ config/"
     
     - name: Upload security report
       uses: actions/upload-artifact@v4
